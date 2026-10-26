@@ -1,3 +1,4 @@
+import { plural } from "../lib/pl";
 import { createEmptyCard, fsrs, Rating, State, type Card, type Grade } from "ts-fsrs";
 
 /** Serialized FSRS card. Dates are epoch milliseconds to keep backups small and JSON-safe. */
@@ -85,13 +86,13 @@ export const isLearning = (c?: CardState) => !!c && !isMastered(c);
 
 export function formatInterval(ms: number) {
   const m = Math.round(ms / 60000);
-  if (m < 1) return "<1分";
-  if (m < 60) return `${m}分`;
+  if (m < 1) return "<1 min";
+  if (m < 60) return `${m} min`;
   const h = Math.round(m / 60);
-  if (h < 24) return `${h}小时`;
+  if (h < 24) return `${h} godz.`;
   const d = Math.round(h / 24);
-  if (d < 31) return `${d}天`;
+  if (d < 31) return `${d} ${plural(d, "dzień", "dni", "dni")}`;
   const mo = Math.round(d / 30);
-  if (mo < 12) return `${mo}个月`;
-  return `${(d / 365).toFixed(1)}年`;
+  if (mo < 12) return `${mo} mies.`;
+  return `${(d / 365).toFixed(1).replace(".", ",")} r.`;
 }

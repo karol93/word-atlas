@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import type { Accent } from "../atlas/types";
+import { APP_NAME } from "../config";
 import type { CardState, Grade } from "./srs";
 
 export type QuizKind = "meaning" | "picture" | "listen" | "spell";
@@ -300,12 +301,12 @@ export function importBackup(text: string): { ok: true; cards: number } | { ok: 
   try {
     data = JSON.parse(text);
   } catch {
-    return { ok: false, error: "文件不是有效的 JSON。" };
+    return { ok: false, error: "Plik nie jest prawidłowym JSON-em." };
   }
   if (!isObj(data) || data.app !== "word-atlas" || data.version !== 2 || !isObj(data.progress))
-    return { ok: false, error: "这不是词光的学习备份。" };
+    return { ok: false, error: `To nie jest kopia zapasowa nauki z aplikacji ${APP_NAME}.` };
   const id = state.progress.datasetId;
-  if (data.progress.datasetId !== id) return { ok: false, error: "备份来自另一个词库，请先切换到对应词库。" };
+  if (data.progress.datasetId !== id) return { ok: false, error: "Kopia pochodzi z innego zestawu słówek. Najpierw przełącz się na odpowiedni zestaw." };
   const progress = sanitizeProgress({ ...data.progress, session: null }, id);
   state = { ...state, progress, settings: { ...sanitizeSettings(data.settings), onboarded: true } };
   emit();

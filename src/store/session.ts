@@ -52,6 +52,7 @@ function quizKind(ref: WordRef, p: Progress, s: Settings, salt: number): QuizKin
 /** Distractors that look plausible: same level, similar spelling or length, different meaning. */
 export function distractors(atlas: Atlas, ref: WordRef, kind: QuizKind, seed: number) {
   const target = normalize(ref.word);
+  // NOTE: depends on data format: `ref.zh` is Chinese ("pos. meaning；meaning") and the regex splits on Chinese punctuation (phase 2: revisit with Polish data).
   const zhCore = ref.zh.replace(/^[a-z.]+\s*/, "").split(/[；;，,]/)[0];
   const scored: [number, WordRef][] = [];
   const pool = atlas.words;

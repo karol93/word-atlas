@@ -2,6 +2,7 @@ import { Crosshair, Minus, Plus, RotateCcw, Share2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAtlas } from "../atlas/context";
 import type { WordRef } from "../atlas/types";
+import { plural } from "../lib/pl";
 import { openWord } from "../lib/router";
 import { cue, playFile } from "../lib/sound";
 import { isMastered } from "../store/srs";
@@ -293,7 +294,7 @@ export function Galaxy({
         }}
         onWheel={onWheel}
         role="img"
-        aria-label={`词汇星图：${layout.n} 颗星，已点亮 ${lit} 颗。可拖动旋转、滚动缩放，点击星星打开词条。`}
+        aria-label={`Mapa gwiazd słówek: ${layout.n} ${plural(layout.n, "gwiazda", "gwiazdy", "gwiazd")}, rozświetlone: ${lit}. Przeciągnij, aby obrócić, przewiń, aby przybliżyć, kliknij gwiazdę, aby otworzyć słowo.`}
         tabIndex={0}
         onKeyDown={(e) => {
           const eng = engine.current;
@@ -328,28 +329,28 @@ export function Galaxy({
       )}
       <div className="galaxy-hud">
         <p>
-          <b>{lit.toLocaleString()}</b> / {layout.n.toLocaleString()} 颗星已点亮
+          <b>{lit.toLocaleString("pl-PL")}</b> / {layout.n.toLocaleString("pl-PL")} {plural(layout.n, "gwiazda", "gwiazdy", "gwiazd")} rozświetlone
         </p>
         <ul className="galaxy-legend" aria-hidden="true">
           <li>
             <i className="lg-dust" />
-            未学
+            Nowe
           </li>
           <li>
             <i className="lg-learning" />
-            学习中
+            W nauce
           </li>
           <li>
             <i className="lg-mastered" />
-            已掌握
+            Opanowane
           </li>
         </ul>
       </div>
       <div className="galaxy-controls">
-        <button className="icon-btn" onClick={() => engine.current && (engine.current.cam.dist = clampDist(engine.current.cam.dist * 0.8))} aria-label="放大">
+        <button className="icon-btn" onClick={() => engine.current && (engine.current.cam.dist = clampDist(engine.current.cam.dist * 0.8))} aria-label="Przybliż">
           <Plus size={18} />
         </button>
-        <button className="icon-btn" onClick={() => engine.current && (engine.current.cam.dist = clampDist(engine.current.cam.dist * 1.25))} aria-label="缩小">
+        <button className="icon-btn" onClick={() => engine.current && (engine.current.cam.dist = clampDist(engine.current.cam.dist * 1.25))} aria-label="Oddal">
           <Minus size={18} />
         </button>
         <button
@@ -359,7 +360,7 @@ export function Galaxy({
             engine.current?.replayIntro();
             if (store.get().settings.sfx) void cue("fly");
           }}
-          aria-label="回到全景"
+          aria-label="Wróć do całego widoku"
         >
           <RotateCcw size={17} />
         </button>
@@ -374,15 +375,15 @@ export function Galaxy({
               if (store.get().settings.sfx) void cue("fly");
             }
           }}
-          aria-label="飞到一颗已点亮的星"
+          aria-label="Przeleć do rozświetlonej gwiazdy"
         >
           <Crosshair size={17} />
         </button>
-        <button className="icon-btn" onClick={() => canvas.current && shareGalaxy(canvas.current, lit, layout.n)} aria-label="分享我的星图">
+        <button className="icon-btn" onClick={() => canvas.current && shareGalaxy(canvas.current, lit, layout.n)} aria-label="Udostępnij moją mapę gwiazd">
           <Share2 size={17} />
         </button>
       </div>
-      <p className="galaxy-hint">拖动旋转 · 滚动缩放 · 点击星星打开词条</p>
+      <p className="galaxy-hint">Przeciągnij, aby obrócić · przewiń, aby przybliżyć · kliknij gwiazdę, aby otworzyć słowo</p>
     </div>
   );
 }

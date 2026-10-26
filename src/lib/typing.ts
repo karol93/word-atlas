@@ -1,4 +1,4 @@
-/** Normalize the typography mobile keyboards commonly substitute. */
+/** Normalize the typography mobile keyboards commonly substitute. NFKC composes ą/ę/ó/ż, so typed and stored Polish text compare equal; diacritics are kept. */
 export const clean = (text: string) =>
   text
     .normalize("NFKC")

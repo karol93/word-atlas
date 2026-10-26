@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { APP_NAME } from "../config";
 import { duck, playFile, preloadFiles } from "../lib/sound";
 import { dayKey, store } from "../store/store";
 
@@ -71,14 +72,17 @@ function targets(w: number, h: number, count: number) {
   g.closePath();
   g.fill();
   const zh = Math.min(w * 0.3, s * 0.24);
-  g.font = `700 ${zh}px "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", serif`;
+  // Fit the brand name to the width so longer Polish names stay on screen.
+  g.font = `700 ${zh}px "Fraunces Variable", Georgia, serif`;
+  const fit = Math.min(zh, (zh * w * 0.86) / Math.max(1, g.measureText(APP_NAME).width));
+  g.font = `700 ${fit}px "Fraunces Variable", Georgia, serif`;
   g.textAlign = "center";
   g.textBaseline = "middle";
-  g.fillText("词光", cx, cy + R + zh * 0.78);
-  const en = Math.max(18, zh * 0.24);
+  g.fillText(APP_NAME, cx, cy + R + zh * 0.78);
+  const en = Math.max(14, Math.min(zh * 0.24, w * 0.035));
   g.font = `700 ${en}px "Fraunces Variable", Georgia, serif`;
   g.letterSpacing = `${en * 0.34}px`;
-  g.fillText("WORD ATLAS", cx, cy + R + zh * 1.52);
+  g.fillText("ATLAS SŁÓWEK", cx, cy + R + zh * 1.52);
   const data = g.getImageData(0, 0, w, h).data;
   // Take every lit pixel, then a random subset: no visible sampling grid.
   const all: [number, number][] = [];
@@ -237,22 +241,21 @@ export function Splash({ onDone }: { onDone: () => void }) {
   }); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className={`splash is-${phase} ${reduce ? "is-reduced" : ""}`} onClick={() => open()} role="dialog" aria-label="欢迎打开雅思大门，点击进入">
+    <div className={`splash is-${phase} ${reduce ? "is-reduced" : ""}`} onClick={() => open()} role="dialog" aria-label="Witaj w Atlasie Słówek, dotknij, aby wejść">
       <div className="door door-l" />
       <div className="door door-r" />
       <div className="splash-light" />
       <canvas ref={canvas} className="splash-canvas" aria-hidden="true" />
       {reduce && (
         <div className="splash-static">
-          <b>词光</b>
-          <small>WORD ATLAS</small>
+          <b>{APP_NAME}</b>
         </div>
       )}
       <div className="splash-copy">
-        <p className="splash-tag">欢迎打开雅思大门</p>
+        <p className="splash-tag">Witaj w Atlasie Słówek</p>
         <p className="splash-hint">
           <span className="splash-key" />
-          点击开启 · 按任意键
+          Dotknij, aby zacząć · dowolny klawisz
         </p>
       </div>
       <button
@@ -262,7 +265,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
           open(false);
         }}
       >
-        跳过
+        Pomiń
       </button>
     </div>
   );

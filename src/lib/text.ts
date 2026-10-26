@@ -63,4 +63,13 @@ export const splitPair = (s: string) => {
   return { en: (en || "").trim(), zh: (zh || "").trim() };
 };
 
+/** Lowercase and strip diacritics so "zolw" matches "żółw" (ł has no decomposition, so map it). */
+export const fold = (s: string) =>
+  s
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/ł/gi, "l")
+    .trim()
+    .toLowerCase();
+
 export const plural = (n: number) => n.toLocaleString("en-US");

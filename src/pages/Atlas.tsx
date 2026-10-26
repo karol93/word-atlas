@@ -2,6 +2,7 @@ import { Grid3x3, List, Search, Sparkles, X } from "lucide-react";
 import { Galaxy } from "../galaxy/Galaxy";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useAtlas } from "../atlas/context";
+import { plural } from "../lib/pl";
 import type { WordRef } from "../atlas/types";
 import { morphFrom } from "../lib/motion";
 import { go, openWord, type Route } from "../lib/router";
@@ -13,11 +14,11 @@ import { Speak } from "../ui/Speak";
 
 type Status = "all" | "new" | "learning" | "mastered" | "saved";
 const STATUS: [Status, string][] = [
-  ["all", "全部"],
-  ["new", "未学"],
-  ["learning", "学习中"],
-  ["mastered", "已掌握"],
-  ["saved", "收藏"],
+  ["all", "Wszystkie"],
+  ["new", "Nowe"],
+  ["learning", "W nauce"],
+  ["mastered", "Opanowane"],
+  ["saved", "Zapisane"],
 ];
 
 type View = "grid" | "list" | "galaxy";
@@ -97,14 +98,14 @@ export function AtlasPage({
     <div className={`page atlas ${view === "galaxy" ? "is-galaxy" : ""}`}>
       <header className="atlas-head">
         <div>
-          <p className="eyebrow">图鉴 · {atlas.count.toLocaleString()} 词</p>
+          <p className="eyebrow">Atlas · {atlas.count.toLocaleString("pl-PL")} {plural(atlas.count, "słowo", "słowa", "słów")}</p>
           <h1 className="display">
-            每个词，
+            Każde słowo
             <br className="br-sm" />
-            都有一幅画。
+            ma swój obraz.
           </h1>
           <p className="lede">
-            {atlas.examples.toLocaleString()} 条原创例句 · 英美发音 · 按难度和 {atlas.topics.length} 个雅思话题整理
+            {atlas.examples.toLocaleString("pl-PL")} {plural(atlas.examples, "oryginalne zdanie", "oryginalne zdania", "oryginalnych zdań")} · wymowa brytyjska i amerykańska · uporządkowane wg poziomu i {atlas.topics.length} {plural(atlas.topics.length, "tematu", "tematów", "tematów")}
           </p>
         </div>
         <label className="search">
@@ -112,7 +113,7 @@ export function AtlasPage({
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="搜索单词或中文释义"
+            placeholder="Szukaj słowa lub polskiego tłumaczenia"
             spellCheck={false}
             autoComplete="off"
           />
@@ -120,7 +121,7 @@ export function AtlasPage({
             <button
               className="icon-btn"
               onClick={() => setQ("")}
-              aria-label="清空搜索"
+              aria-label="Wyczyść wyszukiwanie"
             >
               <X size={16} />
             </button>
@@ -131,12 +132,12 @@ export function AtlasPage({
       <div className="filters">
         {view !== "galaxy" && (
           <>
-            <div className="chips chips-scroll" role="group" aria-label="难度">
+            <div className="chips chips-scroll" role="group" aria-label="Poziom">
               <button
                 className={`chip-btn ${!level ? "is-on" : ""}`}
                 onClick={() => setFilter({ level: undefined })}
               >
-                所有难度
+                Wszystkie poziomy
               </button>
               {atlas.cefr.map((l) => (
                 <button
@@ -150,12 +151,12 @@ export function AtlasPage({
                 </button>
               ))}
             </div>
-            <div className="chips chips-scroll" role="group" aria-label="主题">
+            <div className="chips chips-scroll" role="group" aria-label="Temat">
               <button
                 className={`chip-btn ${!topic ? "is-on" : ""}`}
                 onClick={() => setFilter({ topic: undefined })}
               >
-                所有主题
+                Wszystkie tematy
               </button>
               {atlas.topics.map(([k, name]) => (
                 <button
@@ -173,7 +174,7 @@ export function AtlasPage({
         )}
         <div className="filters-row">
           {view !== "galaxy" && (
-            <div className="segmented" role="group" aria-label="学习状态">
+            <div className="segmented" role="group" aria-label="Status nauki">
               {STATUS.map(([k, label]) => (
                 <button
                   key={k}
@@ -188,18 +189,18 @@ export function AtlasPage({
           )}
           <span className="result-count">
             {view === "galaxy"
-              ? "搜索一个词，星图会带你飞过去"
-              : `${list.length.toLocaleString()} 个结果`}
+              ? "Wyszukaj słowo, a mapa gwiazd tam cię zaprowadzi"
+              : `${list.length.toLocaleString("pl-PL")} ${plural(list.length, "wynik", "wyniki", "wyników")}`}
           </span>
           <div
             className="segmented segmented-icons"
             role="group"
-            aria-label="视图"
+            aria-label="Widok"
           >
             <button
               className={view === "grid" ? "is-on" : ""}
               onClick={() => setView("grid")}
-              aria-label="图片视图"
+              aria-label="Widok z obrazkami"
               aria-pressed={view === "grid"}
             >
               <Grid3x3 size={17} />
@@ -207,7 +208,7 @@ export function AtlasPage({
             <button
               className={view === "list" ? "is-on" : ""}
               onClick={() => setView("list")}
-              aria-label="列表视图"
+              aria-label="Widok listy"
               aria-pressed={view === "list"}
             >
               <List size={17} />
@@ -215,7 +216,7 @@ export function AtlasPage({
             <button
               className={view === "galaxy" ? "is-on" : ""}
               onClick={() => setView("galaxy")}
-              aria-label="星图视图"
+              aria-label="Widok mapy gwiazd"
               aria-pressed={view === "galaxy"}
             >
               <Sparkles size={17} />
@@ -229,7 +230,7 @@ export function AtlasPage({
       ) : list.length === 0 ? (
         <div className="empty">
           <img src={`${import.meta.env.BASE_URL}brand/empty.webp`} alt="" />
-          <p>这片星域还没有词。换个筛选条件试试。</p>
+          <p>W tej części nieba nie ma jeszcze słów. Zmień filtry.</p>
         </div>
       ) : view === "grid" ? (
         <VirtualGrid items={list} cards={cards} />

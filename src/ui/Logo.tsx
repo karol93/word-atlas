@@ -1,3 +1,5 @@
+import { APP_NAME, TAGLINE } from "../config";
+
 export function Mark({ size = 28 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" className="mark">
@@ -18,8 +20,8 @@ export function Logo({ compact = false }: { compact?: boolean }) {
     <span className="logo">
       <Mark />
       <span className="logo-text">
-        <b>词光</b>
-        {!compact && <small>Word Atlas</small>}
+        <b>{APP_NAME}</b>
+        {!compact && <small>{TAGLINE}</small>}
       </span>
     </span>
   );
